@@ -453,6 +453,24 @@
     }
   };
 
+  function renderConnError() {
+    setSeoVisible(false);
+    const ua = navigator.userAgent || '';
+    const inApp = /Discord|Snapchat|Instagram|FBAN|FBAV|Twitter|TikTok|musical_ly|Line\/|WhatsApp/i.test(ua);
+    app().innerHTML = `
+      <div class="glass-card text-center home-card">
+        <div class="emoji-huge">📡</div>
+        <h2>ما قدرنا نتصل باللعبة</h2>
+        ${inApp
+          ? '<p>أنت فاتح الرابط من داخل تطبيق (ديسكورد أو سناب أو غيره). افتحه في <b>Safari</b> أو <b>Chrome</b> وبيشتغل 👌</p><p class="muted small">اضغط ⋯ أو أيقونة المشاركة، واختر "فتح في المتصفح"</p>'
+          : '<p>تأكد من اتصالك بالإنترنت وجرّب مرة ثانية.</p>'}
+        <button class="btn btn-primary btn-block" id="retryBtn">🔄 حاول مرة ثانية</button>
+        <button class="btn btn-outline btn-block" id="copyLinkBtn" style="margin-top:10px">🔗 نسخ الرابط</button>
+      </div>`;
+    $('#retryBtn').onclick = () => location.reload();
+    $('#copyLinkBtn').onclick = () => copyText(location.href);
+  }
+
   /* ==================== الشاشة: البداية ==================== */
   function renderLoading() {
     app().innerHTML = `<div class="glass-card text-center"><div class="emoji-huge spin">🎨</div><h2>جاري التحميل…</h2></div>`;
@@ -1427,8 +1445,12 @@
   /* ==================== التشغيل ==================== */
   async function boot() {
     renderLoading();
-    S.db = await Net.init();
-    if (S.db.fallback) toast('ما قدرنا نتصل بـ Firebase، شغالين على وضع التجربة', 'warn', 5000);
+    try {
+      S.db = await Net.init();
+    } catch (e) {
+      console.error(e);
+      return renderConnError();
+    }
     Ads.init();
     S.me.name = localStorage.getItem('dg_name') || '';
     const params = new URLSearchParams(location.search);
