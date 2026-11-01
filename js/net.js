@@ -168,16 +168,29 @@
     return api;
   }
 
+  function withTimeout(promise, ms) {
+    return Promise.race([
+      promise,
+      new Promise((_, rej) => setTimeout(() => rej(new Error('timeout')), ms))
+    ]);
+  }
+
   /* ---------------- Firebase ---------------- */
   async function FirebaseAdapter(cfg) {
     const base = `https://www.gstatic.com/firebasejs/${FB_VER}/`;
-    await loadScript(base + 'firebase-app-compat.js');
-    await Promise.all([
-      loadScript(base + 'firebase-auth-compat.js'),
-      loadScript(base + 'firebase-database-compat.js')
-    ]);
+    if (!window.firebase) {
+      await withTimeout(loadScript(base + 'firebase-app-compat.js'), 15000);
+      await withTimeout(Promise.all([
+        loadScript(base + 'firebase-auth-compat.js'),
+        loadScript(base + 'firebase-database-compat.js')
+      ]), 15000);
+    }
     if (!firebase.apps.length) firebase.initializeApp(cfg);
-    await firebase.auth().signInAnonymously();
+    const auth = firebase.auth();
+    // المتصفحات الداخلية (ديسكورد، سناب، انستقرام…) ممكن تعلّق التخزين،
+    // فنخلي تسجيل الدخول في الذاكرة بس عشان ما يعلق
+    try { await withTimeout(auth.setPersistence(firebase.auth.Auth.Persistence.NONE), 4000); } catch (e) { /* ignore */ }
+    await withTimeout(auth.signInAnonymously(), 12000);
     const db = firebase.database();
     let offset = 0;
     db.ref('.info/serverTimeOffset').on('value', (s) => { offset = s.val() || 0; });
@@ -223,14 +236,8 @@
     async init() {
       const cfg = window.FIREBASE_CONFIG || {};
       if (cfg.apiKey && cfg.databaseURL) {
-        try {
-          return await FirebaseAdapter(cfg);
-        } catch (e) {
-          console.error('Firebase failed, falling back to local mode', e);
-          const a = LocalAdapter();
-          a.fallback = true;
-          return a;
-        }
+        // لو فشل الاتصال نرمي الخطأ عشان تطلع رسالة واضحة بدل التعليق
+        return await FirebaseAdapter(cfg);
       }
       return LocalAdapter();
     }
