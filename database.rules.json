@@ -1,0 +1,24 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "rooms": {
+      "$room": {
+        ".read": "auth != null",
+        ".write": "auth != null && $room.length >= 4 && $room.length <= 6",
+        "players": {
+          "$pid": {
+            "name": { ".validate": "newData.isString() && newData.val().length <= 15" },
+            "score": { ".validate": "newData.isNumber()" },
+            "sab": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 5" }
+          }
+        },
+        "chat": {
+          "$msg": {
+            "t": { ".validate": "newData.isString() && newData.val().length <= 80" }
+          }
+        }
+      }
+    }
+  }
+}

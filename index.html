@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>ارسم وخمّن 🎨 | لعبة رسم جماعية أونلاين بالتحديات والتخريب</title>
+  <meta name="description" content="لعبة رسم وتخمين جماعية أونلاين من 2 إلى 8 لاعبين. ارسم بالمقلوب وبقلم مجنون، خمّن رسمات ربعك، وخرّب عليهم! مجانية وتنلعب من الجوال بدون تنزيل.">
+  <meta name="keywords" content="لعبة رسم, ارسم وخمن, لعبة جماعية, لعبة اونلاين, العاب مع الاصدقاء, سكريبل عربي, لعبة تخمين">
+  <meta name="theme-color" content="#FF6B6B">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="ارسم وخمّن 🎨 لعبة رسم جماعية بالتحديات">
+  <meta property="og:description" content="ارسم بالمقلوب وبقلم مجنون، وخرّب على ربعك 😈 العب مع أصحابك أونلاين بدون تنزيل.">
+  <meta property="og:locale" content="ar_SA">
+  <link rel="icon" href="icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"VideoGame","name":"ارسم وخمّن","inLanguage":"ar","genre":["Party","Drawing"],"gamePlatform":"Web browser","numberOfPlayers":{"@type":"QuantitativeValue","minValue":2,"maxValue":8},"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"}}
+  </script>
+</head>
+<body>
+  <div id="toasts" aria-live="polite"></div>
+  <main class="game-wrapper" id="app"></main>
+
+  <!-- محتوى نصي للصفحة: يساعد في الظهور ببحث جوجل وقبول AdSense -->
+  <section class="seo" id="seo">
+    <article class="glass-card">
+      <h2>🎨 وش هي لعبة ارسم وخمّن؟</h2>
+      <p>لعبة رسم وتخمين جماعية تنلعب أونلاين من الجوال أو الكمبيوتر بدون تنزيل. كل دور واحد يرسم كلمة سرية والباقين يحاولون يخمّنونها بالشات. بس الفرق إن كل رسام ياخذ <b>تحدي</b> يخرب عليه رسمته، والباقين يقدرون <b>يخرّبون</b> عليه بعد! النتيجة: رسمات مضحكة وفوضى حلوة مع ربعك.</p>
+    </article>
+    <article class="glass-card">
+      <h2>🕹️ طريقة اللعب</h2>
+      <ol>
+        <li>اكتب اسمك واضغط <b>سوّ غرفة جديدة</b>.</li>
+        <li>ارسل رابط الغرفة لربعك بالواتساب (من 2 إلى 8 لاعبين).</li>
+        <li>المضيف يختار عدد الجولات ووقت الرسم ويبدأ اللعبة.</li>
+        <li>الرسام يختار كلمة من 3 كلمات ويرسمها مع التحدي حقه.</li>
+        <li>الباقين يكتبون تخميناتهم بالشات، وكل ما خمّنت أسرع أخذت نقاط أكثر.</li>
+        <li>بعد ما يرسم الكل، صاحب أعلى نقاط يفوز 🏆</li>
+      </ol>
+    </article>
+    <article class="glass-card">
+      <h2>😈 التحديات</h2>
+      <div class="grid">
+        <div class="tile"><b>🪞 مرآة</b>رسمتك تنعكس يمين ويسار.</div>
+        <div class="tile"><b>🙃 بالمقلوب</b>كل شي ترسمه ينقلب فوق تحت.</div>
+        <div class="tile"><b>📳 إيد ترجف</b>الخط يهتز وأنت ترسم.</div>
+        <div class="tile"><b>🌈 قلم مجنون</b>اللون يتغير كل ثانية.</div>
+        <div class="tile"><b>📏 خط مطاطي</b>سمك الخط يكبر ويصغر لحاله.</div>
+        <div class="tile"><b>👻 حبر مخفي</b>أنت ما تشوف رسمتك، بس ربعك يشوفونها.</div>
+        <div class="tile"><b>🐢 قلم كسول</b>الخط يلحق إصبعك ببطء.</div>
+      </div>
+    </article>
+    <article class="glass-card">
+      <h2>💣 التخريب</h2>
+      <p>وأنت تخمّن، تقدر تضغط زر <b>خرّب على الرسام</b> وترمي عليه مفاجأة لثواني: زلزال، قلب الشاشة، قلم عملاق، تعمية وغيرها. كل لاعب عنده تخريب مجاني كل دور، ويقدر ياخذ شحنات زيادة. والمخرّب يبقى مجهول لين تخلص الرسمة وينكشف 😂</p>
+    </article>
+    <article class="glass-card">
+      <h2>❓ أسئلة شائعة</h2>
+      <details><summary>هل اللعبة مجانية؟</summary><p>إيه، مجانية بالكامل وتنلعب من المتصفح بدون تسجيل أو تنزيل.</p></details>
+      <details><summary>كم لاعب يقدرون يلعبون؟</summary><p>من 2 إلى 8 لاعبين في الغرفة الواحدة، وكل واحد يلعب من جواله.</p></details>
+      <details><summary>هل تشتغل على الجوال؟</summary><p>إيه، مصممة للجوال أول شي، وتشتغل على الآيفون والأندرويد والكمبيوتر.</p></details>
+      <details><summary>كيف أعزم ربعي؟</summary><p>بعد ما تسوي الغرفة اضغط زر الواتساب أو نسخ الرابط وارسله لهم، يفتحونه ويدخلون على طول.</p></details>
+    </article>
+  </section>
+
+  <footer class="site-footer">
+    <a href="about.html">عن اللعبة</a>
+  </footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/words.js"></script>
+  <script src="js/net.js"></script>
+  <script src="js/ads.js"></script>
+  <script src="js/game.js"></script>
+</body>
+</html>

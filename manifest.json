@@ -1,0 +1,11 @@
+{
+  "name": "ارسم وخمّن",
+  "short_name": "ارسم وخمّن",
+  "start_url": "/",
+  "display": "standalone",
+  "dir": "rtl",
+  "lang": "ar",
+  "background_color": "#FFD93D",
+  "theme_color": "#FF6B6B",
+  "icons": [{ "src": "icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}
