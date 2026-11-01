@@ -79,6 +79,20 @@
     for (let i = 0; i < str.length; i++) { h ^= str.charCodeAt(i); h = Math.imul(h, 16777619); }
     return h >>> 0;
   }
+  // رقم عشوائي ثابت لكل خانة وقت (يختلف بقوة بين ثانية والثانية اللي بعدها)
+  function rand01(x) {
+    x = x | 0;
+    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+    x = Math.imul(x ^ (x >>> 16), 0x45d9f3b);
+    x ^= x >>> 16;
+    return (x >>> 0) / 4294967296;
+  }
+  // لون عشوائي كل ثانية، وما يتكرر نفس اللون مرتين ورا بعض
+  function crazyIndex(k, len) {
+    const cur = Math.floor(rand01(k) * len);
+    const prev = Math.floor(rand01(k - 1) * len);
+    return cur === prev ? (cur + 1) % len : cur;
+  }
   function seeded(seed) {
     let s = seed >>> 0;
     return () => { s = (Math.imul(s, 1664525) + 1013904223) >>> 0; return s / 4294967296; };
@@ -312,10 +326,10 @@
       const n = Date.now();
       let c = this.color, w = this.size;
       if (fx.rainbow) c = CRAZY_COLORS[Math.floor(n / 180) % CRAZY_COLORS.length];
-      else if (fx.crazy) c = CRAZY_COLORS[Math.floor(seeded(Math.floor(n / 1000))() * CRAZY_COLORS.length)];
+      else if (fx.crazy) c = CRAZY_COLORS[crazyIndex(Math.floor(n / 1000), CRAZY_COLORS.length)];
       if (fx.giant) w = 42;
       else if (fx.tiny) w = 2;
-      else if (fx.rubber) w = Math.round(3 + seeded(Math.floor(n / 280) + 7)() * 28);
+      else if (fx.rubber) w = Math.round(3 + rand01(Math.floor(n / 280) + 7777) * 30);
       if (this.eraser) return { c: '#FFFFFF', w: Math.max(w, 14) * 1.6, e: 1 };
       return { c, w, e: 0 };
     },
@@ -557,7 +571,7 @@
       if (!code) throw new Error('no code');
       S.me.id = S.me.id || Net.randId(12);
       await S.db.set(`rooms/${code}`, {
-        meta: { hostId: S.me.id, createdAt: now(), settings: { rounds: 2, drawTime: 80 } },
+        meta: { hostId: S.me.id, createdAt: now(), settings: { rounds: 2, drawTime: DRAW_TIME } },
         game: { phase: 'lobby' }
       });
       await joinRoom(code, false, true);
@@ -818,7 +832,7 @@
       };
     });
 
-    const st = S.meta.settings || { rounds: 2, drawTime: 80 };
+    const st = S.meta.settings || { rounds: 2, drawTime: DRAW_TIME };
     const sEl = $('#lobbySettings');
     const roundsOpts = [1, 2, 3, 4, 5].map((n) => `<option value="${n}" ${st.rounds === n ? 'selected' : ''}>${n}</option>`).join('');
     const active = document.activeElement && sEl.contains(document.activeElement);
@@ -847,11 +861,6 @@
   function confirmLeave() {
     if (confirm('أكيد تبي تطلع من الغرفة؟')) leaveRoom();
   }
-  function toggleMute() {
-    S.muted = !S.muted;
-    localStorage.setItem('dg_muted', S.muted ? '1' : '0');
-    document.querySelectorAll('#muteBtn').forEach((b) => { b.textContent = S.muted ? '🔇' : '🔊'; });
-  }
 
   async function watchRewardAd() {
     const cur = myPlayer().sab || 0;
@@ -878,7 +887,7 @@
     if (!amHost()) return;
     const online = onlinePlayers();
     if (online.length < MIN_PLAYERS) return;
-    const st = S.meta.settings || { rounds: 2, drawTime: 80 };
+    const st = S.meta.settings || { rounds: 2, drawTime: DRAW_TIME };
     const order = shuffle(online.map((p) => p.id));
     const upd = {};
     for (const id of Object.keys(S.players)) upd[`players/${id}/score`] = 0;
@@ -958,8 +967,22 @@
     S.db.remove(rp('strokes'));
   }
 
+  // لو المضيف علّق (مثلاً طلع من التطبيق) لاعب ثاني ياخذ مكانه عشان ما توقف اللعبة
+  function hostWatchdog() {
+    const g = S.game;
+    if (!g || !S.meta) return;
+    const deadline = g.phase === 'choosing' ? g.choiceEndsAt : g.phase === 'drawing' ? g.endsAt : g.phase === 'results' ? g.resultsEndsAt : null;
+    if (!deadline || now() < deadline + 7000 || S.tookOver === deadline) return;
+    const cands = onlinePlayers().filter((p) => p.id !== S.meta.hostId);
+    if (cands.length && cands[0].id === S.me.id) {
+      S.tookOver = deadline;
+      S.db.update(rp('meta'), { hostId: S.me.id });
+    }
+  }
+
   function hostTick() {
-    if (!S.code || !amHost() || !S.game) return;
+    if (!S.code || !S.game) return;
+    if (!amHost()) { hostWatchdog(); return; }
     const g = S.game;
     const n = now();
     if (S.hostBusy && Date.now() - S.hostBusyAt > 5000) S.hostBusy = null;

@@ -1,4 +1,5 @@
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+[hidden] { display: none !important; }
 :root {
   --red: #FF6B6B; --red2: #FF4757; --orange: #FFA500; --yellow: #FFD93D; --green: #6BCB77; --blue: #4D96FF;
   --ink: #2C3E50; --muted: #7a8794; --line: #E6E8EB; --card: rgba(255, 255, 255, 0.96);

@@ -19,7 +19,7 @@ window.FIREBASE_CONFIG = {
 window.ADS_CONFIG = {
   publisherId: "",
   testMode: true,
-  simulate: true,
+  simulate: false,
   betweenTurnsEvery: 0,
   frequencyHint: "30s"
 };

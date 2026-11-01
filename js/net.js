@@ -44,7 +44,6 @@
   /* ---------------- وضع التجربة المحلي ---------------- */
   function LocalAdapter() {
     const KEY = 'dg_localdb_v1';
-    const bc = 'BroadcastChannel' in window ? new BroadcastChannel('dg_localdb_v1') : null;
     const listeners = new Set();
     let counter = 0;
 
@@ -95,9 +94,9 @@
     }
     function commit(paths) {
       notify(paths);
-      if (bc) bc.postMessage(paths);
     }
-    if (bc) bc.onmessage = (e) => notify(e.data);
+    // حدث storage يوصل للتبويبات الثانية بعد ما تنحفظ البيانات فعلاً
+    window.addEventListener('storage', (e) => { if (e.key === KEY) notify(['']); });
 
     // تنظيف الغرف القديمة
     (function cleanup() {
